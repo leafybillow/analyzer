@@ -24,6 +24,7 @@
 #pragma link C++ class Decoder::F1TDCModule+;
 #pragma link C++ class Decoder::Caen1190Module+;
 #pragma link C++ class Decoder::Caen775Module+;
+#pragma link C++ class Decoder::Caen965Module+;
 #pragma link C++ class Decoder::Caen792Module+;
 #pragma link C++ class Decoder::THaCodaData+;
 #pragma link C++ class Decoder::THaCodaFile+;
@@ -33,6 +34,7 @@
 #pragma link C++ class Decoder::THaSlotData+;
 #pragma link C++ class Decoder::THaUsrstrutils+;
 #pragma link C++ class Decoder::THaCodaDecoder+;
+
 
 #pragma link C++ class THaBenchmark+;
 #pragma link C++ class THaEvData+;

@@ -134,6 +134,9 @@
 #pragma link C++ class THaEpicsEvtHandler+;
 #pragma link C++ class THaEvt125Handler+;
 
+#pragma link C++ class THaSBUApparatus+;
+#pragma link C++ class THaSBUScint+;
+
 #ifdef ONLINE_ET
 #pragma link C++ class THaOnlRun+;
 #endif
