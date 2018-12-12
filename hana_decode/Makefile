@@ -282,7 +282,7 @@ endif
 
 THaDecDict.C: $(RCHEAD) haDecode_LinkDef.h
 	@echo "Generating Decoder Dictionary..."
-	$(ROOTBIN)/rootcint -f THaDecDict.C -c $(ROOTINC) $(INCLUDES) $(DEFINES) $^
+	$(ROOTBIN)/rootcint -f THaDecDict.C -c -p $(ROOTINC) $(INCLUDES) $(DEFINES) $^
 ifndef STANDALONE
 	if [ -r THaDecDict_rdict.pcm ]; then cp -p THaDecDict_rdict.pcm  $(LIBDIR); fi
 endif

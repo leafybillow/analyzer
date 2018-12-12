@@ -346,7 +346,7 @@ endif
 
 $(HA_DICT).C: $(RCHDR) $(HA_LINKDEF)
 	@echo "Generating dictionary $(HA_DICT)..."
-	$(ROOTBIN)/rootcint -f $@ -c $(ROOTINC) $(INCLUDES) $(DEFINES) $^
+	$(ROOTBIN)/rootcint -f $@ -c -p $(ROOTINC) $(INCLUDES) $(DEFINES) $^
 
 
 #---------- Main program -------------------------------------------
