@@ -31,6 +31,7 @@ namespace Decoder {
   class F1TDCModule;
   class Caen775Module;
   class Caen1190Module;
+  class Caen965Module;
 
   static const Int_t MAXROC = 32;
   static const Int_t MAXBANK = 4095;
