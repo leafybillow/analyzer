@@ -17,7 +17,7 @@
 
 using namespace std;
 
-#define DEBUG 1
+#define DEBUG 0
 #define WITH_DEBUG 0
 
 namespace Decoder {

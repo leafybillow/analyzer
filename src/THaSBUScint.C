@@ -129,7 +129,7 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
     err = kInitError;  // Error already printed by FillDetMap
   }
   */
-  cout<<"test chandan err "<< err<<" nelem "<< fDetMap->GetTotNumChan()<<endl;
+
  /* 
   if( !err && (nelem = fDetMap->GetTotNumChan()) != 4*fNelem ) {
     Error( Here(here), "Number of detector map channels (%d) "
