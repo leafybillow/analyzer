@@ -27,7 +27,7 @@ namespace Decoder {
   class Scaler1151;
   class Scaler3800;
   class Scaler3801;
-  class Fadc250Module;
+  //  class Fadc250Module;
   class F1TDCModule;
   class Caen775Module;
   class Caen1190Module;
