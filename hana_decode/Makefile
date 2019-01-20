@@ -169,7 +169,7 @@ SRC = THaUsrstrutils.C THaCrateMap.C THaCodaData.C \
       THaEvData.C THaCodaDecoder.C \
       CodaDecoder.C Module.C VmeModule.C PipeliningModule.C FastbusModule.C  \
       Lecroy1877Module.C Lecroy1881Module.C Lecroy1875Module.C \
-      Fadc250Module.C GenScaler.C Scaler560.C Scaler1151.C \
+      GenScaler.C Scaler560.C Scaler1151.C \
       Scaler3800.C Scaler3801.C F1TDCModule.C Caen1190Module.C \
       Caen775Module.C Caen792Module.C Caen965Module.C
 
