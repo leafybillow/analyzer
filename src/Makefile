@@ -247,7 +247,7 @@ SRC          := src/THaFormula.C src/THaVform.C src/THaVhist.C \
 
 OBJ          := $(SRC:.C=.o)
 RCHDR        := $(SRC:.C=.h) src/THaGlobals.h
-HDR          := $(RCHDR) src/VarDef.h src/VarType.h src/ha_compiledata.h
+HDR          := $(RCHDR) src/VarDef.h src/VarType.h src/ha_compiledata.h hana_decode/Decoder.h
 DEP          := $(SRC:.C=.d) src/main.d
 OBJS         := $(OBJ) $(HA_DICT).o
 HA_LINKDEF   := src/HallA_LinkDef.h
@@ -385,7 +385,7 @@ ifneq ($(ANALYZER),$(shell pwd))
 		cp -pu $(HDR) $(ANALYZER)/include
 		tar cf - $(shell find examples docs SDK -type f | grep -v '*~') | \
 			tar xf - -C $(ANALYZER)
-		cp -pu Makefile ChangeLog $(ANALYZER)/src
+		cp -pu Makefile $(ANALYZER)/src
 		cp -pru DB $(ANALYZER)/
 		@echo "Installing in $(ANALYZER)/$(PLATFORM) ..."
 		for lib in $(filter-out $(LIBEVIO), $(PODDLIBS)); do \
