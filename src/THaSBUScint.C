@@ -34,7 +34,7 @@ THaSBUScint::THaSBUScint( const char* name, const char* description,
     fhadc15(0), fladc0(0), fladc1(0), fladc2(0), fladc3(0),
     fladc4(0), fladc5(0), fladc6(0), fladc7(0), fladc8(0),
     fladc9(0), fladc10(0), fladc11(0), fladc12(0), fladc13(0),
-    fladc14(0), fladc15(0)
+    fladc14(0), fladc15(0), ev_num(0)
 {
   // Constructor
 }
@@ -48,7 +48,7 @@ THaSBUScint::THaSBUScint()
     fhadc15(0), fladc0(0), fladc1(0), fladc2(0), fladc3(0),
     fladc4(0), fladc5(0), fladc6(0), fladc7(0), fladc8(0),
     fladc9(0), fladc10(0), fladc11(0), fladc12(0), fladc13(0),
-    fladc14(0), fladc15(0)
+    fladc14(0), fladc15(0),ev_num(0)
 {
   // Default constructor (for ROOT I/O)
 
@@ -70,9 +70,7 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
 {
  
    // Read this detector's parameters from the database
-
   const char* const here = "ReadDatabase";
-  //cout<<"THaSBUScint ReadDataBase(000)"<<endl;
   FILE* file = OpenFile( date );
   if( !file ) return kFileError;
   
@@ -83,7 +81,6 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
     fclose(file);
     return err;
   }
-  //cout<<"THaSBUScint ReadDataBase (111) err ReadGeometry "<<err<<endl;
   //vector<Int_t> detmap;
   UShort_t crate;
   UShort_t slot;
@@ -111,7 +108,7 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
     err = kInitError;
   }
 
-  cout<<"THaSBUScint ReadDataBase (222) err  "<<err<<"  fNelem  "<<nelem<<endl;
+
   // Reinitialization only possible for same basic configuration
   if( !err ) {
     if( fIsInit && nelem != fNelem ) {
@@ -122,7 +119,6 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
       fNelem = nelem;
   }
 
-  cout<<"THaSBUScint ReadDataBase (333) err  "<<err<<"  fNelem  "<<nelem<<endl;
   /*
   UInt_t flags = THaDetMap::kFillLogicalChannel | THaDetMap::kFillModel;
   if( !err && FillDetMap(detmap, flags, here) <= 0 ) {
@@ -193,6 +189,7 @@ Int_t THaSBUScint::DefineVariables( EMode mode )
   {"ladc13","LR ADC 13","fladc13"},
   {"ladc14","LR ADC 14","fladc14"},
   {"ladc15","LR ADC 15","fladc15"},
+  {"ev_num","Event Counter","ev_num"},
   { 0}
 };
 
@@ -243,20 +240,14 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
   //cout<<" crate "<<d->crate<<"  slot "<<d->slot<<endl;
   //cout<<"EvType="<<evdata.GetEvType()<<"; EvLength="<<evdata.GetEvLength()<<"; EvNum="<<evdata.GetEvNum()<<endl;
 
-
 //  for( Int_t i = 0; i < fDetMap->GetSize(); i++ ) {
   {  THaDetMap::Module* d = fDetMap->GetModule( 0 );
-    
-  //  cout<<"Decoder THaSBUScint 1111:"<<endl;
     
     // Loop over all channels that have a hit.
     for( Int_t j = 0; j < evdata.GetNumChan( 4, 3 ); j++) {
 
       Int_t chan = evdata.GetNextChan( 4, 3, j );
-      if( chan < 0 || chan > 32  ) continue;     // Not one of my channels
-     
-      //cout<<" Decode:  crate : "<<4<<"  slot : "<<3<<endl;      
-
+      if( chan < 0 || chan > 34  ) continue;          
       Int_t nhit = evdata.GetNumHits(4, 3, chan);
       if( nhit > 1 || nhit == 0 ) {
         ostringstream msg;
@@ -280,8 +271,8 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
 // Get the data. If multiple hits on a TDC channel, take
 //        either first or last hit, depending on TDC mode
       assert( nhit>0 );
-      Int_t data = evdata.GetData( 4, 3, chan, 0 );//mot sure about this zero cg
-      //cout<<"Data chandan  j "<<j<<"  " <<data<<endl;
+      Int_t data = evdata.GetData( 4, 3, chan, 0 );
+
       if(j==0)fhadc0=data;
       if(j==1)fhadc8=data;
       if(j==2)fladc0=data;
@@ -321,10 +312,9 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
       if(j==29)fhadc15=data;
       if(j==30)fladc7=data;
       if(j==31)fladc15=data;
-
+      if(j==34)ev_num=data; // A channel hardcoded in Decoder for event counter
   }
-  //cout<<"fhadc2  "<<fhadc2<<endl;
-  //return 0;
+
 }
 
   return 0;

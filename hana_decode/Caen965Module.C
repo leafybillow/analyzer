@@ -109,7 +109,7 @@ Int_t Caen965Module::LoadSlot(THaSlotData *sldat, const UInt_t *evbuffer, Int_t 
     } else if (fWordsSeen <= nword) { // excludes the End of Block (EOB) word
       UInt_t chan=((p[index])&0x00ff0000)>>16; // number of channel which data are coming from bits 16-20
       UInt_t raw=((p[index])&0x00000fff);      // raw datum bits 0-11
-    //  cout<<"Before word "<<index-pos<<"  "<<chan<<"  "<<raw<<endl;
+      //  cout<<"Before word "<<index-pos<<"  "<<chan<<"  "<<raw<<endl;
       Int_t status = sldat->loadData(MyModType(),chan,raw,raw);
       fWordsSeen++;
       counter++;
@@ -118,8 +118,14 @@ Int_t Caen965Module::LoadSlot(THaSlotData *sldat, const UInt_t *evbuffer, Int_t 
       //cout << "word\t"<<index<<"\t"<<nword<<"\t"<<raw<<endl;
 #endif
       if( status != SD_OK ) return -1;
-    } else fWordsSeen++; // increment the counter for the EOB word
-
+    } else fWordsSeen++;// increment the counter for the EOB word
+    if( ((p[index] & 0xf000000)>>24)==0xc ) {
+      UInt_t chan = 34; // FIXME: Manually assign a channel for event counter now 
+      UInt_t raw =( (p[index])&0x0000FFFF );
+      Int_t status = sldat->loadData(MyModType(),chan,raw,raw);
+      if( status != SD_OK ) return -1;
+      fWordsSeen++; 
+    }
 #ifdef WITH_DEBUG
     //cout << "word   "<<i<<"   "<<nword<<"   "<<raw<<endl;
     if (fDebugFile != 0)

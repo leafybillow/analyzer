@@ -61,7 +61,7 @@ protected:
   Int_t fladc13;
   Int_t fladc14;
   Int_t fladc15;
-
+  Int_t ev_num;
 //  Int_t fadc[32];
 
   void           DeleteArrays();
