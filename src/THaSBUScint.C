@@ -244,10 +244,9 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
   {  THaDetMap::Module* d = fDetMap->GetModule( 0 );
     
     // Loop over all channels that have a hit.
-    for( Int_t j = 0; j < evdata.GetNumChan( 4, 3 ); j++) {
-
+    for( Int_t j = 0; j < evdata.GetNumChan( 4, 3 ); j++) { // FIXME: hardcoded crate and slot number
       Int_t chan = evdata.GetNextChan( 4, 3, j );
-      if( chan < 0 || chan > 34  ) continue;          
+      // if( chan < 0 || chan > 34  ) continue;          
       Int_t nhit = evdata.GetNumHits(4, 3, chan);
       if( nhit > 1 || nhit == 0 ) {
         ostringstream msg;
@@ -272,7 +271,7 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
 //        either first or last hit, depending on TDC mode
       assert( nhit>0 );
       Int_t data = evdata.GetData( 4, 3, chan, 0 );
-
+      // FIXME : Terrible index usage, will fix later
       if(j==0)fhadc0=data;
       if(j==1)fhadc8=data;
       if(j==2)fladc0=data;
@@ -312,7 +311,7 @@ Int_t THaSBUScint::Decode( const THaEvData& evdata )
       if(j==29)fhadc15=data;
       if(j==30)fladc7=data;
       if(j==31)fladc15=data;
-      if(j==34)ev_num=data; // A channel hardcoded in Decoder for event counter
+      if(chan==34)ev_num=data; // A channel hardcoded in Decoder for event counter
   }
 
 }
