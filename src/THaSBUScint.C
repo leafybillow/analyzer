@@ -100,20 +100,21 @@ Int_t THaSBUScint::ReadDatabase( const TDatime& date )
   cout<<"Test crate "<<crate<<" Slot "<<slot<<" lo "<<lo<<" hi "<<hi<<" nelem "<<nelem<<endl; 
   if ( fDetMap->AddModule(crate, slot, lo, hi, 0, 965) < 0 )
    {
-      cout<<"Some problem to add module "<<endl;
+     cerr<< __FUNCTION__ << ":"
+	 <<"Failed to add module "<<endl;
    }
   // Sanity checks
-  if( !err && nelem <= 0 ) {
-    Error( Here(here), "Invalid number of paddles: %d", nelem );
-    err = kInitError;
-  }
+  // if( !err && nelem <= 0 ) {
+  //   Error( Here(here), "Invalid number of paddles: %d", nelem );
+  //   err = kInitError;
+  //}
 
 
   // Reinitialization only possible for same basic configuration
   if( !err ) {
     if( fIsInit && nelem != fNelem ) {
-      Error( Here(here), "Cannot re-initalize with different number of paddles. "
-	     "(was: %d, now: %d). Detector not re-initialized.", fNelem, nelem );
+      // Error( Here(here), "Cannot re-initalize with different number of paddles. "
+      // 	     "(was: %d, now: %d). Detector not re-initialized.", fNelem, nelem );
       err = kInitError;
     } else
       fNelem = nelem;
@@ -229,48 +230,29 @@ void THaSBUScint::Clear( Option_t* opt )
 Int_t THaSBUScint::Decode( const THaEvData& evdata )
 {
   bool has_warning = false;
-  const char* const here = "Decode";
-
-//  cout<<"THaSBUScint Decoder Module  "<<fName<<endl;//"  crate "<<fCrate
- // <<" slot "<<fSlot<<endl;
-  //cout <<"-- Det (name: "<<GetName()<<") Decode THaEvData of Run#"<<evdata.GetRunNum()<<" --"<<endl;
-  //cout<<"Get size fDetMap  "<<fDetMap->GetSize()<<" Module fDetMap  "<<fDetMap->GetModule(fDetMap->GetSize()) <<fDetMap<<endl;
-  THaDetMap::Module* d = fDetMap->GetModule(fDetMap->GetSize());
-  //cout<<" Module pointer "<< d <<endl;  
-  //cout<<" crate "<<d->crate<<"  slot "<<d->slot<<endl;
-  //cout<<"EvType="<<evdata.GetEvType()<<"; EvLength="<<evdata.GetEvLength()<<"; EvNum="<<evdata.GetEvNum()<<endl;
-
-//  for( Int_t i = 0; i < fDetMap->GetSize(); i++ ) {
-  {  THaDetMap::Module* d = fDetMap->GetModule( 0 );
-    
+  
+  for( Int_t i = 0; i < fDetMap->GetSize(); i++ ) {
+    THaDetMap::Module* d = fDetMap->GetModule( i );
+    Int_t crate = d->crate;
+    Int_t slot = d->slot;
     // Loop over all channels that have a hit.
-    for( Int_t j = 0; j < evdata.GetNumChan( 4, 3 ); j++) { // FIXME: hardcoded crate and slot number
-      Int_t chan = evdata.GetNextChan( 4, 3, j );
+    for( Int_t j = 0; j < evdata.GetNumChan( crate, slot ); j++) { 
+      Int_t chan = evdata.GetNextChan( crate, slot, j );
       // if( chan < 0 || chan > 34  ) continue;          
-      Int_t nhit = evdata.GetNumHits(4, 3, chan);
+      Int_t nhit = evdata.GetNumHits(crate, slot, chan);
       if( nhit > 1 || nhit == 0 ) {
         ostringstream msg;
-        msg << nhit << " hits on "
-            << " channel " << 4 << "/" << 3 << "/" << chan;
         ++fMessages[msg.str()];
         has_warning = true;
         if( nhit == 0 ) {
           msg << ". Should never happen. Decoder bug. Call expert.";
-          Warning( Here(here), "Event %d: %s", evdata.GetEvNum(),
-                   msg.str().c_str() );
           continue;
         }
-#ifdef WITH_DEBUG
-        if( fDebug>0 ) {
-          Warning( Here(here), "Event %d: %s", evdata.GetEvNum(),
-                   msg.str().c_str() );
-        }
-#endif
       }
 // Get the data. If multiple hits on a TDC channel, take
 //        either first or last hit, depending on TDC mode
       assert( nhit>0 );
-      Int_t data = evdata.GetData( 4, 3, chan, 0 );
+      Int_t data = evdata.GetData( crate, slot, chan, 0 );
       // FIXME : Terrible index usage, will fix later
       if(j==0)fhadc0=data;
       if(j==1)fhadc8=data;
